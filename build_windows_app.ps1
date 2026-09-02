@@ -100,6 +100,18 @@ python -m PyInstaller `
   --collect-data soundfile `
   app.py
 
+# PyInstaller resets file mtimes, which makes LilyPond's *.scm sources look
+# newer than their compiled *.go bytecode -- it then tries to recompile them
+# at runtime, which is slow and, in the bundled tree, hits a Guile
+# "apply-smob/1: Wrong number of arguments" crash. Bump every .go mtime so
+# the precompiled bytecode is used as-is.
+$lyDist = "dist\$AppName\_internal\bin\lilypond-dist"
+if (Test-Path $lyDist) {
+    $now = Get-Date
+    Get-ChildItem $lyDist -Recurse -Filter *.go -File | ForEach-Object { $_.LastWriteTime = $now }
+    Write-Host "Refreshed LilyPond .go bytecode timestamps."
+}
+
 Write-Host ""
 Write-Host "Done -> dist\$AppName\$AppName.exe"
 Write-Host "This build is self-contained: ffmpeg and lilypond are bundled inside it."

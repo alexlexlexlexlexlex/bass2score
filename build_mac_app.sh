@@ -63,6 +63,17 @@ pyinstaller \
   --collect-data soundfile \
   app.py
 
+# PyInstaller resets file mtimes, making LilyPond's *.scm sources look newer
+# than their compiled *.go bytecode; it then recompiles at runtime, which is
+# slow and can crash Guile. Bump every .go mtime so the bytecode is used
+# as-is.
+LY_DIST="dist/${APP_NAME}.app/Contents/Frameworks/bin/lilypond-dist"
+[ -d "$LY_DIST" ] || LY_DIST="dist/${APP_NAME}.app/Contents/Resources/bin/lilypond-dist"
+if [ -d "$LY_DIST" ]; then
+  find "$LY_DIST" -name '*.go' -exec touch {} +
+  echo "Refreshed LilyPond .go bytecode timestamps."
+fi
+
 echo ""
 echo "Done -> dist/${APP_NAME}.app"
 echo "This .app is self-contained: ffmpeg and lilypond are bundled inside it."
