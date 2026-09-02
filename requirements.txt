@@ -1,6 +1,10 @@
 tkinterdnd2==0.4.2
 
-tensorflow-cpu==2.21.0
+# "tensorflow-cpu" is the CPU-only wheel on Windows/Linux; on macOS that
+# package name doesn't exist -- "tensorflow" there is already CPU-only
+# (GPU on Apple Silicon is a separate tensorflow-metal plugin).
+tensorflow-cpu==2.21.0 ; platform_system != "Darwin"
+tensorflow==2.21.0     ; platform_system == "Darwin"
 onnxruntime
 librosa
 pretty_midi
