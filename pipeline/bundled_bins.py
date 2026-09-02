@@ -9,6 +9,7 @@ Path resolution for external binaries (ffmpeg, ffprobe, lilypond).
 This is the single place that knows about that distinction -- the rest of
 the pipeline just calls bin_path("ffmpeg") etc.
 """
+import os
 import shutil
 import sys
 from pathlib import Path
@@ -24,6 +25,22 @@ def _bundle_root() -> Path | None:
         # or the app's Resources dir (--onedir / macOS .app bundle).
         return Path(getattr(sys, "_MEIPASS", Path(sys.executable).parent))
     return None
+
+
+def _prepend_bundled_bins_to_path() -> None:
+    """Put the bundled binaries on PATH so third-party code that looks them
+    up itself finds them too -- Spleeter's audio adapter, for instance, does
+    its own ``shutil.which("ffmpeg")`` and never calls ``bin_path``."""
+    root = _bundle_root()
+    if root is None:
+        return
+    extra = [root / "bin", root / "bin" / "lilypond-dist" / "bin"]
+    dirs = [str(p) for p in extra if p.is_dir()]
+    if dirs:
+        os.environ["PATH"] = os.pathsep.join(dirs + [os.environ.get("PATH", "")])
+
+
+_prepend_bundled_bins_to_path()
 
 
 def bin_path(name: str) -> str:
