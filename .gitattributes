@@ -1,0 +1,7 @@
+# Keep shell scripts LF so they run on macOS / Linux / CI even when the
+# repo is checked out on Windows.
+*.sh text eol=lf
+*.py text
+*.md text
+*.yml text eol=lf
+*.ps1 text eol=crlf

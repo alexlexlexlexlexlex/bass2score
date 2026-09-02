@@ -1,0 +1,48 @@
+name: Build desktop app
+
+# Builds Basse2Partition on real macOS and Windows runners hosted by
+# GitHub -- neither you nor Claude needs to own a Mac or a Windows PC.
+# Trigger manually from the Actions tab ("Run workflow"), or on every
+# push to main. Download the finished .app / .exe from the run's
+# "Artifacts" section once it's green.
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+jobs:
+  build-macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Build
+        run: |
+          chmod +x build_mac_app.sh
+          ./build_mac_app.sh
+      - name: Zip the .app (preserves executable bits/bundle structure)
+        run: |
+          cd dist
+          ditto -c -k --sequesterRsrc --keepParent Basse2Partition.app Basse2Partition-mac.zip
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Basse2Partition-mac
+          path: dist/Basse2Partition-mac.zip
+
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Build
+        shell: pwsh
+        run: .\build_windows_app.ps1
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Basse2Partition-windows
+          path: dist/Basse2Partition/

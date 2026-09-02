@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+
+# PyInstaller / build output
+build/
+dist/
+*.spec
+bin/
+build_deps/
+
+# Spleeter model cache if it ever lands in-tree (should live in ~/.basse2partition)
+pretrained_models/
+
+# OS
+.DS_Store
+Thumbs.db

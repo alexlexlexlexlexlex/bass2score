@@ -1,0 +1,35 @@
+tkinterdnd2==0.4.2
+
+tensorflow-cpu==2.21.0
+onnxruntime
+librosa
+pretty_midi
+soundfile
+music21==10.5.0
+numpy
+requests
+
+# spleeter runtime deps (installed here because spleeter goes in --no-deps)
+pandas
+typer
+ffmpeg-python
+norbert
+httpx
+
+# basic-pitch's own runtime deps, listed here because basic-pitch itself
+# has to be installed with --no-deps (see below).
+mir_eval
+resampy
+scipy
+scikit-learn
+
+# spleeter (2021) and basic-pitch 0.4.0 both pin dependency versions that
+# have no wheels for modern Python:
+#   - spleeter pins numpy<1.24, librosa==0.8.0, ...
+#   - basic-pitch pins tensorflow<2.15.1 for Python >= 3.11 (no such build
+#     exists for Windows / Python 3.12)
+# Install both with --no-deps and let the versions above satisfy their
+# actual runtime needs (basic-pitch runs on the bundled ONNX model, so it
+# never touches TensorFlow at runtime):
+#   pip install --no-deps spleeter==2.1.0
+#   pip install --no-deps basic-pitch==0.4.0
