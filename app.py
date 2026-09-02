@@ -7,6 +7,7 @@ notation + tab) and a MIDI file.
 Run with:  python app.py
 Package into a native .app / .exe with PyInstaller -- see README.md.
 """
+import multiprocessing
 import os
 import queue
 import sys
@@ -285,4 +286,8 @@ def main():
 
 
 if __name__ == "__main__":
+    # Required in a frozen (PyInstaller) build: without it, any
+    # multiprocessing worker re-launches this exe -- i.e. a new window /
+    # a hung pool -- instead of running the worker function.
+    multiprocessing.freeze_support()
     main()

@@ -151,7 +151,11 @@ def separate_stem(
     from spleeter.model.provider import ModelProvider
     ModelProvider.DEFAULT_MODEL_PATH = models_root
     duration = get_duration(input_path)
-    separator = Separator("spleeter:4stems")
+    # multiprocess=False: Spleeter otherwise opens a multiprocessing.Pool at
+    # construction, and in a frozen build each worker re-launches the exe
+    # (hang / stray windows). We already chunk the track ourselves, so the
+    # pool bought us nothing here anyway.
+    separator = Separator("spleeter:4stems", multiprocess=False)
 
     chunks_dir = os.path.join(work_dir, "chunks")
     os.makedirs(chunks_dir, exist_ok=True)
