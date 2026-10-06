@@ -4,7 +4,7 @@ Path resolution for external binaries (ffmpeg, ffprobe, lilypond).
 - Running from source (`python app.py`): use whatever is on PATH.
 - Running from a PyInstaller bundle: use the copies placed in the bundle's
   `bin/` folder by the build script (build_mac_app.sh /
-  build_windows_app.bat), so end users install nothing.
+  build_windows_app.ps1), so end users install nothing.
 
 This is the single place that knows about that distinction -- the rest of
 the pipeline just calls bin_path("ffmpeg") etc.

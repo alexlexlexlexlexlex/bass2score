@@ -27,8 +27,11 @@ sur des runners hébergés par GitHub si tu préfères ne pas builder en local.
 # Dépendances système (Chocolatey -- https://chocolatey.org/install si pas déjà fait)
 choco install -y python312 ffmpeg lilypond
 
+# Récupérer le projet
+git clone https://github.com/alexlexlexlexlexlex/bass2score.git
+cd bass2score
+
 # Environnement Python
-cd basse2partition
 python -m venv venv
 venv\Scripts\Activate.ps1
 pip install -r requirements.txt
@@ -49,10 +52,13 @@ absent.
 
 ```bash
 # Dépendances système
-brew install python@3.12 ffmpeg lilypond
+brew install python@3.12 python-tk@3.12 ffmpeg lilypond
+
+# Récupérer le projet
+git clone https://github.com/alexlexlexlexlexlex/bass2score.git
+cd bass2score
 
 # Environnement Python
-cd basse2partition
 python3.12 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
@@ -62,6 +68,11 @@ pip install --no-deps basic-pitch==0.4.0  # voir note dans requirements.txt
 # Lancer l'appli
 python app.py
 ```
+
+`python-tk@3.12` n'est pas optionnel : le Python de Homebrew est livré
+sans Tkinter, alors que `app.py` est une interface Tkinter. Sans ce
+paquet l'appli s'arrête sur `ModuleNotFoundError: No module named
+'tkinter'` avant d'afficher sa fenêtre.
 
 Au premier traitement, le modèle Spleeter (~150 Mo) et le modèle
 basic-pitch se téléchargent/chargent automatiquement — connexion internet
@@ -86,11 +97,12 @@ Une fois l'installation ci-dessus faite et testée avec `python app.py` :
 
 Produit `dist/Basse2Partition.app`, à glisser dans `/Applications`.
 **Important** : ce script doit tourner sur un Mac (PyInstaller ne fait pas
-de cross-compilation depuis Linux/Windows vers macOS). `ffmpeg` et
-`lilypond` restent des dépendances Homebrew installées sur la machine —
-elles ne sont pas embarquées dans le `.app` (ça garderait le bundle plus
-léger ; à revoir si tu distribues l'appli à des gens qui n'ont pas
-Homebrew).
+de cross-compilation depuis Linux/Windows vers macOS).
+
+`ffmpeg` et `lilypond` sont copiés **dans** le bundle : Homebrew ne sert
+qu'à la machine qui builde, et le `.app` produit se double-clique sur un
+Mac où rien n'est installé. C'est ce qui alourdit le bundle, et c'est
+voulu — l'appli est faite pour être distribuée telle quelle.
 
 ## Étendre à d'autres instruments
 
